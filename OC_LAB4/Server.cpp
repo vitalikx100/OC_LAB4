@@ -42,43 +42,40 @@ int main()
     listen(sListen, SOMAXCONN);
 
     SOCKET newConnection;
-      
-    newConnection = accept(sListen, (SOCKADDR*)&addr, &size_of_addr);
-    if (newConnection == 0)
-    {
-        cout << "Error\n";
-    }
-    else
-    {
-        cout << "Connection succesful\n";            
-        int n;
-        int i = 0;
-        cout << "Input n: ";
-        n = check();
-        while(true)
-        {          
-            newConnection = accept(sListen, (SOCKADDR*)&addr, &size_of_addr);  
-            for (i; i <= n; i++)
-            {
                 
-                if(send(newConnection, (char*)&i, sizeof(i), NULL) == SOCKET_ERROR)
-                {
-                    cout << "Failed to write data to socket: " << GetLastError() << endl;
-                    break;
-                }
-                cout << "Client" << newConnection << ":";
-                cout << i << endl;
-                Sleep(200);
-            }
-              
-            
-            if (i >= n)
+    int n;
+    int i = 0;
+    cout << "Input n: ";
+    n = check();
+    while(true)
+    {          
+        newConnection = accept(sListen, (SOCKADDR*)&addr, &size_of_addr);
+        if (newConnection == 0)
+        {
+            cout << "Error\n";
+            return 0;
+        }
+        for (i; i <= n; i++)
+        {
+                
+            if(send(newConnection, (char*)&i, sizeof(i), NULL) == SOCKET_ERROR)
             {
-                cout << "Task complited\n";
+                cout << "Failed to write data to client " << newConnection << endl;
+                cout << "Client " << newConnection << " disconnected" << endl;
                 break;
             }
+            cout << "Client" << newConnection << ":";
+            cout << i << endl;
+            Sleep(200);
+        }
+                        
+        if (i >= n)
+        {
+            cout << "Task complited\n";
+            break;
         }
     }
+    
         
     
     return 0;
